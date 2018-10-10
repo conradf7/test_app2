@@ -1,14 +1,15 @@
 version: 2
 jobs:
   build:
-    # Variable expansion in working_directory not supported at this time
-    # You will need to modify the code below to reflect your github account/repo setup
+    # docker setup
     working_directory: /go/src/github.com/conradf7/test_app2
     docker:
       - image: circleci/golang:1.11
     branches:
       only:
         - master
+
+    # steps for checkout and testing
     steps:
       - checkout
       - setup_remote_docker
@@ -42,7 +43,7 @@ jobs:
           # error codes 2 & 3 indicate WARN or other, and should not break the run
           command: |
             docker pull owasp/zap2docker-weekly;
-            docker run -t owasp/zap2docker-weekly zap-baseline.py \
+            docker run -t owasp/zap2docker-weekly zap-baseline.py   \
                 -u https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/master/zap-baseline.conf \
                 -t http://172.17.0.2:8080/ || \
             if [ $? -ne 1 ]; then exit 0; else exit 1; fi; 
