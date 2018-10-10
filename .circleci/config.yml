@@ -3,7 +3,7 @@ jobs:
   build:
     # Variable expansion in working_directory not supported at this time
     # You will need to modify the code below to reflect your github account/repo setup
-    working_directory: /go/src/github.com/conradf7/test_app2
+    working_directory: /tmp
     docker:
       - image: circleci/golang:1.11
     branches:
@@ -23,6 +23,7 @@ jobs:
       - run:
           name: Build application container
           command: |
+            echo "${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}";
             go install --ldflags '-extldflags "-static"' github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME};
             [ ! -e bin ] && mkdir bin;
             cp "${GOPATH_HEAD}/bin/${CIRCLE_PROJECT_REPONAME}" bin/invoicer;
